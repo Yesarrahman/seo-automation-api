@@ -1,5 +1,5 @@
-# Use official Node.js 18 slim image
-FROM node:18-slim
+# Node 20 required by cheerio@1.x and puppeteer@24.x
+FROM node:20-slim
 
 # Install Chromium dependencies for Puppeteer
 RUN apt-get update && apt-get install -y \
@@ -28,11 +28,10 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy package files first (for Docker layer caching)
+# Copy package files first (Docker layer caching)
 COPY package*.json ./
 
 # Install production dependencies
-# PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false ensures Chromium is downloaded
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
 RUN npm install --production
 
@@ -42,5 +41,5 @@ COPY index.js ./
 # Expose port
 EXPOSE 3000
 
-# Start the server
+# Start server
 CMD ["node", "index.js"]
